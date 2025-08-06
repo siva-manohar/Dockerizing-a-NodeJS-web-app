@@ -1,0 +1,31 @@
+# CI/CD automation
+name: docker pipeline
+
+on:
+  push:
+    branches: master
+  pull_request:
+    branches: master
+
+jobs:                                             #stages
+  build:                                          #stage-1
+    runs-on: ubuntu-latest
+
+    steps:                                        #steps
+    - uses: actions/checkout@v2
+
+    - name: aws configure
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1
+
+    - name: login to ECR
+      uses: aws-actions/amazon-ecr-login
+    
+    - name: build and push to ECR
+      run: |
+        docker build -f docker-project .
+        docker tag docker-project:latest 793120837001.dkr.ecr.us-east-1.amazonaws.com/docker-project:latest
+        docker push 793120837001.dkr.ecr.us-east-1.amazonaws.com/docker-project:latest
