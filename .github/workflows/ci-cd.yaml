@@ -10,7 +10,7 @@ on:
 jobs:                                             #stages
   build:                                          #stage-1
     runs-on: ubuntu-latest
-
+    environment: stage
     steps:                                        #steps
     - uses: actions/checkout@v2
 
