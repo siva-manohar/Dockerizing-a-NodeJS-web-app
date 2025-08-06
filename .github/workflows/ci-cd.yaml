@@ -22,7 +22,7 @@ jobs:                                             #stages
         aws-region: us-east-1
 
     - name: login to ECR
-      uses: aws-actions/amazon-ecr-login
+      uses: aws-actions/amazon-ecr-login@v1
     
     - name: build and push to ECR
       run: |
