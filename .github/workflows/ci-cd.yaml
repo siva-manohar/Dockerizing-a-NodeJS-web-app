@@ -26,6 +26,6 @@ jobs:                                             #stages
     
     - name: build and push to ECR
       run: |
-        docker build -f Dockerfile .
+        docker build -f Dockerfile -t docker-project .
         docker tag docker-project:latest 793120837001.dkr.ecr.us-east-1.amazonaws.com/docker-project:latest
         docker push 793120837001.dkr.ecr.us-east-1.amazonaws.com/docker-project:latest
