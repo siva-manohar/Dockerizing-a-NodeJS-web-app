@@ -8,24 +8,46 @@ on:
     branches: master
 
 jobs:                                             #stages
-  build:                                          #stage-1
+  # build:                                          #stage-1
+  #   runs-on: ubuntu-latest
+  #   environment: stage
+  #   steps:                                        #steps
+  #   - uses: actions/checkout@v2
+
+  #   - name: aws configure
+  #     uses: aws-actions/configure-aws-credentials@v4
+  #     with:
+  #       aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  #       aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  #       aws-region: us-east-1
+
+  #   - name: login to ECR
+  #     uses: aws-actions/amazon-ecr-login@v1
+    
+  #   - name: build and push to ECR
+  #     run: |
+  #       docker build -f Dockerfile -t docker-project .
+  #       docker tag docker-project:latest 793120837001.dkr.ecr.us-east-1.amazonaws.com/docker-project:latest
+  #       docker push 793120837001.dkr.ecr.us-east-1.amazonaws.com/docker-project:latest
+
+  deploy:
+    # needs: build
     runs-on: ubuntu-latest
     environment: stage
-    steps:                                        #steps
-    - uses: actions/checkout@v2
+    steps:
+      - name: aws configure
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+      
+      # - name: login to ECR
+      #   uses: aws-actions/amazon-ecr-login@v1
 
-    - name: aws configure
-      uses: aws-actions/configure-aws-credentials@v4
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: us-east-1
-
-    - name: login to ECR
-      uses: aws-actions/amazon-ecr-login@v1
-    
-    - name: build and push to ECR
-      run: |
-        docker build -f Dockerfile -t docker-project .
-        docker tag docker-project:latest 793120837001.dkr.ecr.us-east-1.amazonaws.com/docker-project:latest
-        docker push 793120837001.dkr.ecr.us-east-1.amazonaws.com/docker-project:latest
+      - name: ec2-connect
+        run: |
+          aws ssm send-command \
+            --document-name "AWS-RunShellScript" \
+            --targets "Key=instanceIds,Values=<instance-id>" \
+            --parameters 'commands=["echo \"Hello, world!\" > /hello.txt"]'
