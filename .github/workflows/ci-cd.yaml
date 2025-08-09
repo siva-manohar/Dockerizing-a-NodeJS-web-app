@@ -49,5 +49,5 @@ jobs:                                             #stages
         run: |
           aws ssm send-command \
             --document-name "AWS-RunShellScript" \
-            --targets "Key=instanceIds,Values=<instance-id>" \
+            --targets "Key=instanceIds,Values= i-083bfbf4ba5518f08" \
             --parameters 'commands=["echo \"Hello, world!\" > /hello.txt"]'
