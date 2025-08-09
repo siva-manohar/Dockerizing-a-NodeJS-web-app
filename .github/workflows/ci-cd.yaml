@@ -50,4 +50,4 @@ jobs:                                             #stages
           aws ssm send-command \
             --document-name "AWS-RunShellScript" \
             --targets "Key=instanceIds,Values=i-083bfbf4ba5518f08" \
-            --parameters 'commands=["aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 793120837001.dkr.ecr.us-east-1.amazonaws.com","docker pull 793120837001.dkr.ecr.us-east-1.amazonaws.com/docker-project:${{github.sha}}", "docker rm -f docker-project", "docker run -itd --name docker-project 793120837001.dkr.ecr.us-east-1.amazonaws.com/docker-project:${{github.sha}}"]'
+            --parameters 'commands=["docker pull 793120837001.dkr.ecr.us-east-1.amazonaws.com/docker-project:${{github.sha}}", "docker rm -f docker-project", "docker run -itd --name docker-project 793120837001.dkr.ecr.us-east-1.amazonaws.com/docker-project:${{github.sha}}"]'
